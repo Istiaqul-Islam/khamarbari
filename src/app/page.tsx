@@ -83,6 +83,25 @@ interface PublicStats {
   avgRating: number;
 }
 
+const subscriptionPlans = [
+  { name: "Starter", price: "59", description: "For small farms getting started", badge: "Good for basics" },
+  { name: "Pro", price: "99", description: "For active livestock owners and sellers", badge: "Most popular" },
+  { name: "Business", price: "250", description: "For larger operations and teams", badge: "Advanced tools" },
+];
+
+const getRoleLabel = (role?: string) => {
+  switch (role) {
+    case "admin":
+      return "Admin";
+    case "receptionist":
+      return "Receptionist";
+    case "livestock_farmer":
+      return "Livestock Farmer";
+    default:
+      return "Marketplace User";
+  }
+};
+
 export default function LandingPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
@@ -770,11 +789,11 @@ export default function LandingPage() {
       image: "/puspita.jpg",
     },
     {
-      name: "Tasmia Habib",
-      title: "CSE 031 08199",
+      name: "Saifa Binte Aziz",
+      title: "CSE 031 08179",
       dept: "Dept. of Computer Science and Engineering",
       role: "Designer & Developer",
-      image: "/tasmia.jpg",
+      image: "/user.png",
     },
   ];
 
@@ -813,6 +832,12 @@ export default function LandingPage() {
               Testimonials
             </a>
             <a
+              href="#plans"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Plans
+            </a>
+            <a
               href="#about"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
@@ -837,9 +862,10 @@ export default function LandingPage() {
                         {getInitials(user.name)}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="hidden md:inline text-sm font-medium">
-                      {user.name || "User"}
-                    </span>
+                    <div className="hidden md:flex flex-col items-start leading-none">
+                      <span className="text-sm font-medium">Account</span>
+                      <span className="text-xs text-muted-foreground">{getRoleLabel(user.role)}</span>
+                    </div>
                     <ChevronDown className="h-4 w-4 hidden md:block" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -1032,6 +1058,22 @@ export default function LandingPage() {
               >
                 <a href="#features">Learn More</a>
               </Button>
+            </div>
+
+            <div id="plans" className="mt-8 grid w-full gap-4 md:grid-cols-3">
+              {subscriptionPlans.map((plan) => (
+                <Link key={plan.name} href="/" className="group rounded-2xl border border-primary/15 bg-background/80 p-4 text-left shadow-sm transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-md">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-primary">{plan.name}</span>
+                    <Badge variant="secondary">{plan.badge}</Badge>
+                  </div>
+                  <p className="mt-3 text-3xl font-black">৳{plan.price}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
+                  <span className="mt-4 inline-flex items-center text-sm font-medium text-primary">
+                    View plan <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-1" />
+                  </span>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

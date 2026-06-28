@@ -56,6 +56,19 @@ interface UserProfile {
   updatedAt: string;
 }
 
+const getRoleDisplay = (role?: string) => {
+  switch (role) {
+    case "admin":
+      return { label: "Administrator", description: "Full system access and moderation" };
+    case "receptionist":
+      return { label: "Receptionist", description: "Appointments and patient coordination" };
+    case "livestock_farmer":
+      return { label: "Livestock Farmer", description: "Marketplace and livestock management" };
+    default:
+      return { label: "Marketplace User", description: "Browse and buy from the marketplace" };
+  }
+};
+
 export default function ProfilePage() {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -708,12 +721,15 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="font-medium">Account Role</p>
-                  <p className="text-sm text-muted-foreground">Your permission level</p>
+                  <p className="text-sm text-muted-foreground">Your permission level and access</p>
                 </div>
               </div>
-              <Badge variant={user?.role === "admin" ? "default" : "secondary"}>
-                {user?.role === "admin" ? "Administrator" : "User"}
-              </Badge>
+              <div className="text-right">
+                <Badge variant={user?.role === "admin" ? "default" : "secondary"}>
+                  {getRoleDisplay(user?.role).label}
+                </Badge>
+                <p className="mt-1 text-xs text-muted-foreground">{getRoleDisplay(user?.role).description}</p>
+              </div>
             </div>
 
             <Separator />
