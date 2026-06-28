@@ -681,7 +681,7 @@ export default function AppointmentsPage() {
                     }}
                     disabled={pets.length === 0}
                   >
-                    {pets.length === 0 ? "Add a pet first" : "Book Appointment"}
+                    {pets.length === 0 ? "Add an animel first" : "Book Appointment"}
                   </Button>
                 </CardContent>
               </Card>
