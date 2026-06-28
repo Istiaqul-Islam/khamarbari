@@ -82,7 +82,7 @@ export default function ReceptionistsAdminPage() {
         const usersData = (await usersRes.json()) as { users: AppUser[] };
         // Filter out existing receptionists and admins
         const availableUsers = (usersData.users || []).filter(
-          (u: AppUser) => u.role === "user"
+          (u: AppUser) => u.role !== "admin" && u.role !== "receptionist"
         );
         setUsers(availableUsers);
       }
