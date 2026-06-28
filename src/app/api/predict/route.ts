@@ -1,7 +1,7 @@
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 
-const HFS_API_URL = "https://istiaq666-cattle-disease-predictor.hf.space/predict";
+const HFS_API_URL = process.env.HFS_API_URL || "https://istiaq666-cattle-disease-predictor.hf.space/predict";
 
 interface CattlePredictRequest {
   body_temperature?: number | string;

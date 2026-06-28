@@ -24,10 +24,13 @@ def home():
 
 
 def clean_units(val):
-    if pd.isna(val) or val == 'No' or val == '': return 0.0
+    if pd.isna(val) or val == 'No' or val == '':
+        return 0.0
     val = str(val).replace('°C', '').replace(' days', '').replace(' day', '').replace(' week', '').replace(' weeks', '').replace(' years', '').replace(' year', '')
-    try: return float(val)
-    except: return 0.0
+    try:
+        return float(val)
+    except:
+        return 0.0
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -40,17 +43,22 @@ def predict():
         # Create a DataFrame with a single row
         # Ensure all expected columns are present, default to sensible values
         input_data = {}
+        numeric_cols = {
+            'body_temperature', 'milk_production', 'respiratory_rate',
+            'walking_capacity', 'sleeping_duration', 'body_condition_score',
+            'heart_rate', 'eating_duration', 'lying_down_duration',
+            'ruminating', 'rumen_fill'
+        }
+
         for col in feature_cols:
             val = data.get(col)
             if val is None:
-                # Default values for missing columns
-                if col in ['Age', 'Weight', 'Body_Temperature', 'Heart_Rate', 'Duration']:
+                if col in numeric_cols:
                     input_data[col] = [0.0]
                 else:
-                    input_data[col] = ["No"] # Default for binary/categorical symptoms
+                    input_data[col] = ["ideal"]
             else:
-                # Apply cleaning for numeric columns
-                if col in ['Age', 'Weight', 'Body_Temperature', 'Heart_Rate', 'Duration']:
+                if col in numeric_cols:
                     input_data[col] = [clean_units(val)]
                 else:
                     input_data[col] = [val]

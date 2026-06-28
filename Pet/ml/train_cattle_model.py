@@ -1,15 +1,21 @@
-import pandas as pd
-import joblib
 import os
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OrdinalEncoder, LabelEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.ensemble import HistGradientBoostingClassifier
 
-# Load cattle dataset from root
-df = pd.read_csv('../cattle_dataset.csv')
+import joblib
+import numpy as np
+import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import LabelEncoder, OrdinalEncoder, StandardScaler
+
+# Locate the dataset relative to this script
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+dataset_path = os.path.join(root_dir, 'dataset', 'cattle_dataset.csv')
+if not os.path.exists(dataset_path):
+    raise FileNotFoundError(f"Could not find dataset at {dataset_path}")
+
+df = pd.read_csv(dataset_path)
 
 # 1. FEATURES & TARGET
 feature_cols = [

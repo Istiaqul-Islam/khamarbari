@@ -99,21 +99,39 @@ The site communicates with the Hugging Face Space via the internal API route at:
 
 `src/app/api/predict/route.ts`
 
-In that file, set the public Space endpoint URL in the `HFS_API_URL` constant:
+That route forwards prediction requests from your web app to the Hugging Face Space. This avoids CORS issues and keeps the integration clean.
+
+### Use an environment variable for the Space URL
+
+The route now reads:
 
 ```ts
-const HFS_API_URL = "https://<your-username>.hf.space/predict";
+const HFS_API_URL = process.env.HFS_API_URL || "https://<your-username>.hf.space/predict";
 ```
 
-Then the dashboard predictor page calls your Next.js API route (`/api/predict`), and that route forwards the request to the Hugging Face Space. This avoids CORS issues and keeps the web app integration clean.
+So you should store the public Space URL in your local `.env.local` file for development:
 
-If you prefer, you can also replace the hard-coded URL with an environment variable and read it from `process.env.HFS_API_URL`.
+```env
+HFS_API_URL=https://<your-username>.hf.space/predict
+```
+
+For production, add the same variable in your hosting environment settings (Cloudflare Pages, Vercel, etc.).
+
+### Example
+
+```env
+HFS_API_URL=https://your-username.hf.space/predict
+```
+
+Then the dashboard predictor page calls your Next.js API route (`/api/predict`), and that route forwards the request to the Hugging Face Space.
 
 ## 🧪 Notes
 
 - The training dataset is located in `dataset/cleaned_animal_disease_prediction.csv`, now used as cattle health data.
 - The API automatically converts units and missing values for numeric fields.
-- If the model file is missing, run `python ml/train_model.py` to generate `ml/model.pkl`.
+- Run the current cattle model training script from the `Pet/` folder:
+  - `./venv/bin/python ml/train_cattle_model.py`
+- The project includes `.dockerignore` to exclude `venv/` and cache files from Docker builds, so the Space upload stays small and starts faster.
 
 ---
 

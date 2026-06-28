@@ -1,42 +1,42 @@
-# 🐾 PetCare Pro - Next-Gen Pet Care & AI Diagnostics 
+# 🐄 KhamarBari - Livestock Farm & Health Management
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://petcare-pro.pages.dev)
-[![Stack](https://img.shields.io/badge/Stack-Next.js%2015%20|%20Turso%20|%20Cloudflare-blue)](https://petcare-pro.pages.dev)
-[![AI](https://img.shields.io/badge/AI-Llama%203.1%20|%20Workers%20AI-orange)](https://petcare-pro.pages.dev)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://khamarbari.pages.dev)
+[![Stack](https://img.shields.io/badge/Stack-Next.js%2015%20|%20Turso%20|%20Cloudflare-blue)](https://khamarbari.pages.dev)
+[![AI](https://img.shields.io/badge/AI-Llama%203.1%20|%20Workers%20AI-orange)](https://khamarbari.pages.dev)
 
-PetCare Pro is a high-performance, production-ready pet management ecosystem that combines professional veterinary tools with state-of-the-art **Generative AI**. Built on the Cloudflare Edge network and powered by Turso, it offers zero-latency performance and specialized medical inference.
+KhamarBari is a production-ready livestock farm management ecosystem that combines veterinary operations, farm records, and state-of-the-art **Generative AI**. Built on the Cloudflare Edge network and powered by Turso, it delivers low-latency performance for herd management, health diagnostics, and farm workflows.
 
 ---
 
 ## 🌟 Major Highlights
 
-### 🤖 AI Disease Predictor (New!)
+### 🤖 Livestock Disease Predictor (New!)
 
-A clinical-grade diagnostic assistant trained on the **Animal Disease Prediction (Kaggle)** dataset.
+A clinical-grade diagnostic assistant trained on a cattle-focused health dataset.
 
-- **Pattern Recognition:** Analyzes 22 clinical parameters across 8 animal species.
+- **Pattern Recognition:** Analyzes vital signs and livestock behavior for cattle health risk.
 - **Neural Inference:** Uses Cloudflare Workers AI (Llama 3.1) to analyze symptoms, body temperature, and heart rate.
-- **Smart Reports:** Generates structured diagnostic summaries with confidence scores and medical recommendations.
+- **Smart Reports:** Generates structured diagnostics with confidence scores and farm-safe recommendations.
 
 ### 💬 Intelligent AI Chatbot
 
 Not just a generic bot—a specialized Veterinary Guide.
 
-- **Clinical Knowledge:** Injected with specialized knowledge for livestock and domestic pets.
-- **Site Navigator:** Understands the entire PetCare Pro platform; can guide users to "My Pets", "Vaccinations", or "Appointments".
+- **Clinical Knowledge:** Injected with specialized knowledge for livestock and farm animal care.
+- **Site Navigator:** Understands the entire KhamarBari platform; can guide users to "My Animals", "Vaccinations", or "Appointments".
 - **Token Optimized:** Specially tuned prompt engineering to stay within Cloudflare's free-tier AI Neuron limits (10,000/day) while providing professional, concise answers.
 
 ---
 
 ## ✨ Core Features
 
-✅ **Health Dashboard** - Real-time statistics and quick actions for your pets.  
-✅ **Pet Management** - Deep profile tracking for multiple animals.  
+✅ **Health Dashboard** - Real-time livestock statistics and quick actions for your farm.  
+✅ **Livestock Management** - Deep profile tracking for multiple animals.  
 ✅ **Vet Appointments** - Full-cycle booking and management system.  
 ✅ **Veterinarian Profiles** - Comprehensive doctor profiles with integrated Google Maps.  
 ✅ **Interactive Clinic Maps** - Embedded Google Maps with directions and location sharing.  
 ✅ **Vaccination Log** - History tracking and future reminder system.  
-✅ **Social Community** - Post updates, share tips, and connect with other pet owners.  
+✅ **Social Community** - Post updates, share tips, and connect with other farmers.  
 ✅ **Multi-Role RBAC** - Optimized interfaces for Users, Veterinarians, and Admins.  
 ✅ **Premium Dark Mode** - Stunning, responsive UI designed for maximum readability.
 
@@ -78,8 +78,8 @@ A comprehensive doctor management system with integrated mapping capabilities.
 ### 2. Installation
 
 ```bash
-git clone https://github.com/Istiaqul-Islam/petcare-pro.git
-cd petcare-pro-main
+git clone https://github.com/Istiaqul-Islam/khamarbari.git
+cd khamarbari
 npm install
 ```
 
@@ -89,7 +89,7 @@ Create a `.env.local` file:
 
 ```env
 DATABASE_MODE=local
-LOCAL_DB_PATH=./petcare_local.db
+LOCAL_DB_PATH=./khamarbari_local.db
 NODE_ENV=development
 IMGBB_API_KEY=your_key_here
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -102,8 +102,8 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 npm run db:init   # Initialize & Seed Local SQLite
 
 # Or manual setup (if npm script fails):
-sqlite3 petcare_local.db < schema.sql
-sqlite3 petcare_local.db < seed.sql
+sqlite3 khamarbari_local.db < schema.sql
+sqlite3 khamarbari_local.db < seed.sql
 
 # Start development server
 npm run dev
@@ -113,7 +113,7 @@ npm run dev
 
 Since veterinarians are no longer included in seed data:
 
-1. Navigate to `/admin` (login with admin@petcare.com / admin123)
+1. Navigate to `/admin` (login with admin@khamarbari.com / admin123)
 2. Go to **Veterinarians** section
 3. Click **Add Veterinarian** to add doctors manually
 4. Enter clinic addresses and use **Get from Address** to auto-fill coordinates
@@ -136,12 +136,12 @@ This section covers both initial database setup and updating existing databases.
 
 ```bash
 # Create local database file
-sqlite3 petcare_local.db < schema.sql
-sqlite3 petcare_local.db < seed.sql
+sqlite3 khamarbari_local.db < schema.sql
+sqlite3 khamarbari_local.db < seed.sql
 
 # Verify setup
-sqlite3 petcare_local.db "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
-sqlite3 petcare_local.db "SELECT COUNT(*) as user_count FROM users;"
+sqlite3 khamarbari_local.db "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+sqlite3 khamarbari_local.db "SELECT COUNT(*) as user_count FROM users;"
 ```
 
 #### Cloud Database (Turso)
@@ -155,12 +155,12 @@ source ~/.zshrc  # or source ~/.bashrc
 turso auth login
 
 # Apply schema and seed data
-turso db shell petcaredb --location aws-ap-northeast-1 < schema.sql
-turso db shell petcaredb --location aws-ap-northeast-1 < seed.sql
+turso db shell khamarbari --location aws-ap-northeast-1 < schema.sql
+turso db shell khamarbari --location aws-ap-northeast-1 < seed.sql
 
 # Verify setup
-turso db shell petcaredb --location aws-ap-northeast-1 "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
-turso db shell petcaredb --location aws-ap-northeast-1 "SELECT COUNT(*) as user_count FROM users;"
+turso db shell khamarbari --location aws-ap-northeast-1 "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+turso db shell khamarbari --location aws-ap-northeast-1 "SELECT COUNT(*) as user_count FROM users;"
 ```
 
 ### 🔄 Updating Existing Database
@@ -169,30 +169,30 @@ turso db shell petcaredb --location aws-ap-northeast-1 "SELECT COUNT(*) as user_
 
 ```bash
 # Local database
-sqlite3 petcare_local.db "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+sqlite3 khamarbari_local.db "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
 
 # Cloud database
-turso db shell petcaredb --location aws-ap-northeast-1 "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+turso db shell khamarbari --location aws-ap-northeast-1 "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
 ```
 
 #### Apply Schema Updates
 
 ```bash
 # Local database - safe to run multiple times (uses IF NOT EXISTS)
-sqlite3 petcare_local.db < schema.sql
+sqlite3 khamarbari_local.db < schema.sql
 
 # Cloud database
-turso db shell petcaredb --location aws-ap-northeast-1 < schema.sql
+turso db shell khamarbari --location aws-ap-northeast-1 < schema.sql
 ```
 
 #### Apply/Update Seed Data
 
 ```bash
 # Local database (uses INSERT OR IGNORE to prevent duplicates)
-sqlite3 petcare_local.db < seed.sql
+sqlite3 khamarbari_local.db < seed.sql
 
 # Cloud database
-turso db shell petcaredb --location aws-ap-northeast-1 < seed.sql
+turso db shell khamarbari --location aws-ap-northeast-1 < seed.sql
 ```
 
 ### 🔧 Database Migration Commands
@@ -201,14 +201,14 @@ For existing installations needing updates:
 
 ```bash
 # Update local database with latest schema
-sqlite3 petcare_local.db < schema.sql
+sqlite3 khamarbari_local.db < schema.sql
 
 # Update cloud database with latest schema
-turso db shell petcaredb --location aws-ap-northeast-1 < schema.sql
+turso db shell khamarbari --location aws-ap-northeast-1 < schema.sql
 
 # Re-seed admin user if needed
-sqlite3 petcare_local.db < seed.sql
-turso db shell petcaredb --location aws-ap-northeast-1 < seed.sql
+sqlite3 khamarbari_local.db < seed.sql
+turso db shell khamarbari --location aws-ap-northeast-1 < seed.sql
 ```
 
 ### 📊 Database Schema Overview
@@ -216,7 +216,7 @@ turso db shell petcaredb --location aws-ap-northeast-1 < seed.sql
 The database includes 11 tables:
 
 - `users` - User accounts and profiles
-- `pets` - Pet information and records
+- `pets` - Livestock information and records
 - `veterinarians` - Vet directory with location data
 - `appointments` - Appointment scheduling
 - `vaccinations` - Vaccine tracking and reminders
@@ -231,9 +231,9 @@ The database includes 11 tables:
 
 - The schema uses `IF NOT EXISTS` and `INSERT OR IGNORE` for safe re-application
 - Always backup your database before major updates
-- The admin user credentials are: admin@petcare.com / admin123
-- Local database file: `petcare_local.db`
-- Cloud database name: `petcaredb`
+- The admin user credentials are: admin@khamarbari.com / admin123
+- Local database file: `khamarbari_local.db`
+- Cloud database name: `khamarbari`
 
 ---
 
@@ -243,9 +243,9 @@ This project is built for the **Edge**. Follow these steps for production deploy
 
 ### 🗄️ Database Setup (Turso)
 
-1. Create a DB: `turso db create petcare-pro`
-2. Get URL: `turso db show petcare-pro --url`
-3. Get Token: `turso db tokens create petcare-pro`
+1. Create a DB: `turso db create khamarbari`
+2. Get URL: `turso db show khamarbari --url`
+3. Get Token: `turso db tokens create khamarbari`
 4. Update `.env.local` with `DATABASE_MODE=cloud` and your credentials.
 5. Push schema: `npm run turso:push`
 
@@ -287,10 +287,10 @@ For existing installations needing location support:
 
 ```bash
 # Run the location fields migration
-sqlite3 data/petcare.db < scripts/add-vet-location-fields.sql
+sqlite3 data/khamarbari.db < scripts/add-vet-location-fields.sql
 
 # For Turso cloud deployments
-turso db shell petcare-pro < scripts/add-vet-location-fields.sql
+turso db shell khamarbari < scripts/add-vet-location-fields.sql
 ```
 
 ---
@@ -308,4 +308,4 @@ turso db shell petcare-pro < scripts/add-vet-location-fields.sql
 
 ## 📝 License
 
-Built with ❤️ for Pet Lovers. Distributed under the MIT License.
+Built with ❤️ for Livestock Farmers. Distributed under the MIT License.
