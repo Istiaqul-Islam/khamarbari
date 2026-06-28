@@ -1,7 +1,7 @@
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
 
-const HFS_API_URL = process.env.HFS_API_URL || "https://istiaq666-cattle-disease-predictor.hf.space/predict";
+const HFS_API_URL = process.env.HFS_API_URL || "https://istiaq666-khamarbari-cattle-predictor.hf.space/predict";
 
 interface CattlePredictRequest {
   body_temperature?: number | string;
@@ -53,25 +53,37 @@ export async function POST(req: NextRequest) {
 
       if (response.ok) {
         const result = (await response.json()) as any;
-        if (result.prediction) prediction = result.prediction;
-        if (result.confidence) confidence = result.confidence;
+        if (result.prediction) {
+          prediction = result.prediction.toLowerCase();
+          confidence = result.confidence || 90;
+        }
       } else {
-        // Clinical rule evaluation fallback based on cattle dataset metrics
+        // Clinical rule evaluation fallback - more robust rules based on cattle dataset
         const isFever = payload.body_temperature > 39.2 || payload.body_temperature < 37.5;
         const abnormalFaeces = payload.faecal_consistency !== "ideal";
-        const lowAppetite = payload.eating_duration < 2.5 || payload.ruminating < 4.5;
+        const lowMilkProduction = payload.milk_production < 12;
+        const highRespiratoryRate = payload.respiratory_rate > 40;
+        const lowMovement = payload.walking_capacity < 8000;
+        const lowRumination = payload.ruminating < 4.5;
         
-        if (isFever || abnormalFaeces || lowAppetite) {
+        if (isFever || abnormalFaeces || lowMilkProduction || highRespiratoryRate || lowMovement || lowRumination) {
           prediction = "unhealthy";
-          confidence = 88.4;
+          confidence = 85.0;
         }
       }
-    } catch {
+    } catch (error) {
+      console.error("HFS Space unavailable, using clinical rules:", error);
+      // Clinical rule evaluation - more comprehensive rules
       const isFever = payload.body_temperature > 39.2 || payload.body_temperature < 37.5;
       const abnormalFaeces = payload.faecal_consistency !== "ideal";
-      if (isFever || abnormalFaeces) {
+      const lowMilkProduction = payload.milk_production < 12;
+      const highRespiratoryRate = payload.respiratory_rate > 40;
+      const lowMovement = payload.walking_capacity < 8000;
+      const lowRumination = payload.ruminating < 4.5;
+      
+      if (isFever || abnormalFaeces || lowMilkProduction || highRespiratoryRate || lowMovement || lowRumination) {
         prediction = "unhealthy";
-        confidence = 87.0;
+        confidence = 82.0;
       }
     }
 
@@ -82,7 +94,7 @@ export async function POST(req: NextRequest) {
       confidence: confidence,
       analysis: isHealthy
         ? "Vital signs, ruminating patterns, and faecal consistency fall within optimal health ranges."
-        : `Anomalies detected in vital signs or digestion. (Faecal consistency: ${payload.faecal_consistency}, Temp: ${payload.body_temperature}°C).`,
+        : `Anomalies detected in vital signs or digestion. (Faecal consistency: ${payload.faecal_consistency}, Temp: ${payload.body_temperature}°C, Milk: ${payload.milk_production}L).`,
       recommendations: isHealthy
         ? [
             "Maintain current feeding schedule and fresh water access.",
