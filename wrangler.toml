@@ -8,7 +8,7 @@ pages_build_output_dir = ".vercel/output/static"
 NODE_ENV = "production"
 DATABASE_MODE = "cloud"
 TURSO_CONNECTION_URL = "libsql://khamarbari-istiaqul-islam.aws-ap-northeast-1.turso.io"
-NEXT_PUBLIC_APP_URL = "https://petcare-pro.pages.dev"
+NEXT_PUBLIC_APP_URL = "https://khamarbari.pages.dev"
 
 # Firebase Public Config (Safe for Wrangler)
 NEXT_PUBLIC_FIREBASE_API_KEY = "AIzaSyBs-G5Ib5PVIOi94deJu30tJ92wJx5jaMo"
@@ -24,7 +24,6 @@ FIREBASE_CLIENT_EMAIL = "firebase-adminsdk-fbsvc@khamarbari-92e76.iam.gserviceac
 
 # Add any non-secret public environment variables here.
 # For example, if you want to point to a deployed Hugging Face Space:
-# HFS_API_URL = "https://<your-username>.hf.space/predict"
 
 # ⚠️ CRITICAL: DO NOT ADD SECRETS BELOW TO THIS FILE! ⚠️
 # The following variables MUST be added manually as SECRETS in the 
