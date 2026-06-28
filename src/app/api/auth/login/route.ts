@@ -17,8 +17,12 @@ export async function POST(request: NextRequest) {
       password?: string; 
       idToken?: string;
       confirmVerification?: boolean;
+      requestedRole?: string;
     };
-    const { email, password, idToken, confirmVerification } = body;
+    const { email, password, idToken, confirmVerification, requestedRole } = body;
+    const normalizedRequestedRole = requestedRole && ["user", "livestock_farmer", "receptionist", "admin"].includes(requestedRole)
+      ? requestedRole
+      : undefined;
 
     // DIAGNOSTIC LOGGING
     console.log("📝 [LOGIN] Attempting login for:", email, { confirmVerification });
@@ -48,6 +52,10 @@ export async function POST(request: NextRequest) {
       const isValid = await verifyPassword(password, (user as any).password);
       if (!isValid) {
         return NextResponse.json({ success: false, error: "Invalid admin credentials" }, { status: 401 });
+      }
+
+      if (normalizedRequestedRole && normalizedRequestedRole !== "admin") {
+        return NextResponse.json({ success: false, error: "This account is reserved for administrator access" }, { status: 403 });
       }
 
       // Admin logged in successfully
@@ -127,6 +135,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { success: false, error: "Account not found and auto-creation failed." },
         { status: 401 },
+      );
+    }
+
+    const actualRole = (user as any)?.role || "user";
+    if (normalizedRequestedRole && normalizedRequestedRole !== actualRole) {
+      const roleLabel = normalizedRequestedRole === "user"
+        ? "marketplace user"
+        : normalizedRequestedRole === "livestock_farmer"
+          ? "livestock farmer"
+          : normalizedRequestedRole === "receptionist"
+            ? "receptionist"
+            : "administrator";
+      return NextResponse.json(
+        { success: false, error: `This account is not registered as a ${roleLabel}` },
+        { status: 403 },
       );
     }
 

@@ -1,24 +1,44 @@
 export const runtime = "edge";
 import { NextRequest, NextResponse } from "next/server";
+import { getAI } from "@/lib/cf-context";
 import { getEnv } from "@/lib/env";
 
-function buildFallbackResponse(messages: Array<{ role?: string; content?: string }> = []) {
-  const latest = messages.filter((m) => m.role === "user").slice(-1)[0]?.content?.toLowerCase() || "";
-  const lower = latest.trim();
+function getLatestUserMessage(messages: Array<{ role?: string; content?: string }> = []) {
+  return messages.filter((message) => message.role === "user").slice(-1)[0]?.content || "";
+}
+
+function buildKnowledgeResponse(message: string) {
+  const lower = message.toLowerCase();
+
+  if (lower.includes("who are you") || lower.includes("introduce yourself")) {
+    return "I’m KhamarBari AI, your livestock care assistant. I can help with animal health, vaccination schedules, disease basics, marketplace questions, and platform navigation for farmers.";
+  }
+
+  if (lower.includes("vaccin") || lower.includes("vaccine")) {
+    return "For calves and young stock, common vaccines include FMD, HS, Anthrax, Black Quarter, and in some regions PPR for small ruminants. The exact schedule depends on the animal’s age, disease risk, and local veterinary advice. For a practical plan, consult a vet and keep vaccination records updated in KhamarBari.";
+  }
+
+  if (lower.includes("mastitis")) {
+    return "Mastitis usually shows up as a swollen, hot, or painful udder, milk changes, and reduced milk yield. Keep the animal comfortable, isolate it if needed, continue milking carefully, and contact a veterinarian quickly if the swelling or fever worsens.";
+  }
+
+  if (lower.includes("foot") || lower.includes("mouth") || lower.includes("fmd")) {
+    return "Foot and Mouth Disease can cause blisters, drooling, lameness, and fever. Isolate sick animals, avoid moving them unnecessarily, and contact a qualified vet immediately. Good hygiene and vaccination help reduce spread.";
+  }
 
   if (lower.includes("marketplace") || lower.includes("buy") || lower.includes("sell")) {
-    return "For marketplace help, you can browse listings from the dashboard, list your own product, and use the cart for checkout. Payment is currently a UI placeholder while we prepare the full payment flow.";
+    return "You can browse livestock products, list your own produce, and manage orders from the marketplace dashboard. The cart flow is ready for browsing and checkout planning, and payment is currently a UI placeholder while the full payment system is prepared.";
   }
 
-  if (lower.includes("symptom") || lower.includes("fever") || lower.includes("cough") || lower.includes("mastitis") || lower.includes("foot") || lower.includes("disease")) {
-    return "If the animal seems sick, separate it from the herd, keep it hydrated, and contact a certified vet quickly. For urgent signs like high fever, swollen udder, or difficulty breathing, seek veterinary care immediately.";
+  if (lower.includes("symptom") || lower.includes("fever") || lower.includes("cough") || lower.includes("disease")) {
+    return "If an animal looks sick, separate it from the herd, keep it hydrated, and monitor temperature and appetite closely. Seek veterinary care promptly for high fever, breathing trouble, severe swelling, or sudden weakness.";
   }
 
-  if (lower.includes("vaccin") || lower.includes("appointment") || lower.includes("vet")) {
-    return "You can use KhamarBari to manage appointments, vaccination schedules, and veterinary follow-ups from the dashboard.";
+  if (lower.includes("appointment") || lower.includes("vet") || lower.includes("doctor")) {
+    return "KhamarBari helps you manage vet appointments, vaccination schedules, and follow-up care from the dashboard. You can also use the platform to keep health notes and reminders in one place.";
   }
 
-  return "I can help with livestock health, disease basics, marketplace questions, and platform navigation. Please tell me what you need help with and I will guide you step by step.";
+  return "I can help with livestock health, vaccinations, disease prevention, marketplace questions, and platform navigation. Tell me what you want help with and I’ll answer with practical farm advice.";
 }
 
 export async function POST(req: NextRequest) {
@@ -30,32 +50,13 @@ export async function POST(req: NextRequest) {
     }
 
     const env = getEnv();
-    const ai = env.AI;
+    const ai = getAI() || env.AI || (globalThis as any).AI;
+    const latestUserMessage = getLatestUserMessage(messages as Array<{ role?: string; content?: string }>);
 
-    const systemPrompt = `You are the 'KhamarBari AI Expert Assistant', a specialized livestock veterinary and farm management AI advisor.
-You specialize in Cows & Bulls (গরু / বলদ), Goats (ছাগল), Water Buffaloes (মহিষ), Sheep (ভেড়া), and Camels (উট).
-
-### Your Clinical & Agricultural Knowledge:
-- Foot and Mouth Disease (FMD): Recognize lameness, drooling, and blister lesions around mouth/hooves.
-- Peste des Petits Ruminants (PPR in Goats/Sheep): Look for high fever, eye/nasal discharge, and severe diarrhea.
-- Mastitis (Cows/Buffaloes): Recognize swollen udder, milk clots, fever, and appetite drop.
-- Anthrax & Black Quarter: Recognize sudden fever, muscle swelling, and breathing difficulty.
-- Nutrition & Feed: Guide on high-protein concentrate feed, green grass silage, and mineral blocks for milk yield.
-
-### KhamarBari Website Navigation & Tools:
-- Marketplaces: Browse products, list produce, and manage cart checkout.
-- Appointments: Schedule vet consultations and clinic visits.
-- Vaccinations: Track FMD, Anthrax, PPR, and HS vaccination schedules.
-- Disease Predictor: Analyze cattle vital signs and rumination data.
-
-### Interaction Rules:
-1. Always give practical, clear advice tailored to livestock farmers.
-2. Guide users to relevant dashboard sections when they ask about platform features.
-3. Stay within livestock, agriculture, and KhamarBari domain.
-4. Keep responses concise and easy to follow.`;
+    const systemPrompt = `You are KhamarBari AI, a practical livestock assistant for Bangladeshi and South Asian farmers. Answer clearly, directly, and use plain language. Focus on animal health, vaccinations, disease prevention, welfare, feed, and platform guidance. If the question is medical, advise a vet for serious cases. Keep responses short, useful, and specific.`;
 
     const input = {
-      max_tokens: 400,
+      max_tokens: 500,
       messages: [
         { role: "system", content: systemPrompt },
         ...messages.map((message: any) => ({ role: message.role, content: message.content })),
@@ -63,19 +64,19 @@ You specialize in Cows & Bulls (গরু / বলদ), Goats (ছাগল), Wa
     };
 
     if (!ai) {
-      return NextResponse.json({ response: buildFallbackResponse(messages as Array<{ role?: string; content?: string }>) });
+      return NextResponse.json({ response: buildKnowledgeResponse(latestUserMessage) });
     }
 
     try {
       const response: any = await ai.run("@cf/meta/llama-3.1-8b-instruct", input);
       const responseText = typeof response === "string" ? response : response?.response;
-      if (!responseText) {
-        return NextResponse.json({ response: buildFallbackResponse(messages as Array<{ role?: string; content?: string }>) });
+      if (!responseText || typeof responseText !== "string") {
+        return NextResponse.json({ response: buildKnowledgeResponse(latestUserMessage) });
       }
       return NextResponse.json({ response: responseText });
     } catch (error: any) {
       console.error("AI chat fallback triggered:", error);
-      return NextResponse.json({ response: buildFallbackResponse(messages as Array<{ role?: string; content?: string }>) });
+      return NextResponse.json({ response: buildKnowledgeResponse(latestUserMessage) });
     }
   } catch (error: any) {
     console.error("Error in chat route:", error);

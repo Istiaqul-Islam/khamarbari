@@ -18,6 +18,9 @@ import {
   Stethoscope,
   Bell,
   Menu,
+  Sparkles,
+  ShieldCheck,
+  Leaf,
   X,
   Star,
   ArrowRight,
@@ -1073,6 +1076,49 @@ export default function LandingPage() {
                     View plan <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-1" />
                   </span>
                 </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y bg-gradient-to-br from-emerald-500/5 via-background to-primary/5">
+        <div className="container mx-auto px-4 py-16">
+          <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background/80 px-3 py-1 text-sm font-medium text-primary">
+                <Sparkles className="h-4 w-4" /> Premium farm operations, simplified
+              </div>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                Built for modern livestock owners who want calm, reliable control.
+              </h2>
+              <p className="max-w-2xl text-lg text-muted-foreground">
+                From vaccination reminders to marketplace sales and vet coordination, KhamarBari brings your whole operation into one polished workspace.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <div className="rounded-2xl border border-primary/15 bg-background/80 px-4 py-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <ShieldCheck className="h-4 w-4 text-primary" /> Smart health tracking
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-primary/15 bg-background/80 px-4 py-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <Leaf className="h-4 w-4 text-primary" /> Farm-first marketplace
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                { title: "Live health insights", text: "Keep animal records, checkups, and reminders in one place." },
+                { title: "Reliable communication", text: "Coordinate with vets, receptionists, and buyers without friction." },
+                { title: "Premium workflows", text: "Modern dashboards and interfaces designed for growth." },
+                { title: "Seamless transactions", text: "List, discover, and manage farm products with confidence." },
+              ].map((item) => (
+                <div key={item.title} className="rounded-3xl border border-black/5 bg-background/80 p-5 shadow-sm">
+                  <h3 className="font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{item.text}</p>
+                </div>
               ))}
             </div>
           </div>

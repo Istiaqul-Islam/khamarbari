@@ -345,6 +345,15 @@ export default function SignupPage() {
                   {emailStatus === "available" && !errors.email && (
                     <p className="text-xs text-emerald-600 dark:text-emerald-400">✓ Email is available</p>
                   )}
+                  {emailStatus === "taken" && !errors.email && (
+                    <p className="text-xs text-red-600 dark:text-red-400">✕ Email is already taken</p>
+                  )}
+                  {emailStatus === "checking" && !errors.email && (
+                    <p className="text-xs text-muted-foreground">Checking email availability…</p>
+                  )}
+                  {emailStatus === "invalid" && formData.email && !errors.email && (
+                    <p className="text-xs text-amber-600 dark:text-amber-400">Please enter a valid email address</p>
+                  )}
                   {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                 </div>
 

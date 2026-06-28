@@ -154,22 +154,24 @@ export default function AboutPage() {
   return (
     <div className="space-y-12 py-4">
       {/* Hero Section */}
-      <section className="text-center max-w-3xl mx-auto">
-        <Badge variant="secondary" className="mb-4">
-          About Us
-        </Badge>
-        <h1 className="text-4xl font-bold mb-4">We Care About Your Livestock</h1>
-        <p className="text-lg text-muted-foreground">
-          KhamarBari is dedicated to making livestock care easier, smarter, and more
-          connected. Our mission is to help farmers provide the best possible
-          care for their cattle, goats, and other livestock.
-        </p>
+      <section className="mx-auto max-w-5xl rounded-[2rem] border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-emerald-500/10 p-8 shadow-2xl shadow-primary/10 sm:p-12">
+        <div className="mx-auto max-w-3xl text-center">
+          <Badge variant="secondary" className="mb-4 rounded-full px-4 py-1">
+            About KhamarBari
+          </Badge>
+          <h1 className="mb-4 text-4xl font-black tracking-tight sm:text-5xl">
+            Premium livestock care for the modern farm.
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            KhamarBari brings health tracking, veterinary coordination, marketplace selling, and farm operations into one calm, professional workspace designed for real farmers.
+          </p>
+        </div>
       </section>
 
       {/* Stats */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {stats.map((stat, i) => (
-          <Card key={i}>
+          <Card key={i} className="border-primary/10 bg-background/80 shadow-sm">
             <CardContent className="pt-6 text-center">
               {loading ? (
                 <div className="h-12 flex flex-col items-center justify-center space-y-2">
@@ -190,19 +192,20 @@ export default function AboutPage() {
       </section>
 
       {/* Features */}
-      <section>
-        <h2 className="text-2xl font-bold text-center mb-8">What We Offer</h2>
+      <section className="rounded-[2rem] border border-primary/10 bg-muted/20 p-6 sm:p-8">
+        <div className="mb-8 max-w-2xl text-center mx-auto">
+          <h2 className="text-2xl font-bold">What KhamarBari helps you do</h2>
+          <p className="mt-2 text-muted-foreground">Every feature is built around practical everyday farm work, from routine care to business growth.</p>
+        </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, i) => (
-            <Card key={i}>
+            <Card key={i} className="border-border/60 bg-background/80 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
               <CardContent className="pt-6">
-                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                   <feature.icon className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {feature.description}
-                </p>
+                <h3 className="mb-2 font-semibold">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground">{feature.description}</p>
               </CardContent>
             </Card>
           ))}

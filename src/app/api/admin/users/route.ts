@@ -4,7 +4,7 @@ export const runtime = "edge";
 
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { queryDb, queryDbFirst, executeDb, getDb } from "@/lib/db";
+import { queryDb, queryDbFirst } from "@/lib/db";
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,12 +22,10 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get("offset") || "0");
     const search = searchParams.get("search");
 
-    const db = await getDb();
-
     let sql = `
       SELECT 
         u.id, u.name, u.email, u.avatar, u.phone, u.role, u.createdAt,
-        (SELECT COUNT(*) FROM pets WHERE userId = u.id) AS petsCount,
+        (SELECT COUNT(*) FROM pets WHERE userId = u.id AND isActive = 1) AS petsCount,
         (SELECT COUNT(*) FROM appointments WHERE userId = u.id) AS appointmentsCount,
         (SELECT COUNT(*) FROM posts WHERE userId = u.id) AS postsCount
       FROM users u
@@ -42,10 +40,7 @@ export async function GET(request: NextRequest) {
     sql += ` ORDER BY u.createdAt DESC LIMIT ? OFFSET ?`;
     params.push(limit, offset);
 
-    const rows = await db
-      .prepare(sql)
-      .bind(...params)
-      .all<Record<string, unknown>>();
+    const rows = await queryDb<Record<string, unknown>>(sql, params);
 
     const users = rows.map((row) => ({
       id: row.id,
@@ -56,9 +51,9 @@ export async function GET(request: NextRequest) {
       role: row.role,
       createdAt: row.createdAt,
       _count: {
-        pets: row.petsCount,
-        appointments: row.appointmentsCount,
-        posts: row.postsCount,
+        livestock: Number(row.petsCount || 0),
+        appointments: Number(row.appointmentsCount || 0),
+        posts: Number(row.postsCount || 0),
       },
     }));
 
@@ -69,7 +64,7 @@ export async function GET(request: NextRequest) {
       countSql += ` WHERE (LOWER(name) LIKE '%' || LOWER(?) || '%' OR LOWER(email) LIKE '%' || LOWER(?) || '%')`;
       countParams.push(search, search);
     }
-    const total = await db.prepare(countSql).bind(...countParams).first<{ count: number }>();
+    const total = await queryDbFirst<{ count: number }>(countSql, countParams);
 
     return NextResponse.json({
       success: true,

@@ -36,6 +36,19 @@ export default function LoginPage() {
     { id: 'admin', title: 'Administrator', description: 'Full system management access', icon: ShieldCheck, color: 'text-amber-500' },
   ];
 
+  const getRoleRedirectRoute = (role?: string) => {
+    switch (role) {
+      case 'admin':
+        return '/admin';
+      case 'receptionist':
+        return '/dashboard/receptionist';
+      case 'livestock_farmer':
+        return '/dashboard';
+      case 'user':
+      default:
+        return '/dashboard/marketplace';
+    }
+  };
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -88,6 +101,7 @@ export default function LoginPage() {
           body: JSON.stringify({
             email: formData.email,
             password: formData.password,
+            requestedRole: selectedRole,
           }),
         });
 
@@ -96,9 +110,7 @@ export default function LoginPage() {
         if (data.success) {
           toast({ title: "Login Successful", description: `Welcome back!` });
           const userRole = data.user?.role || selectedRole;
-          if (userRole === "admin") router.push("/admin");
-          else if (userRole === "user") router.push("/dashboard/marketplace");
-          else router.push("/dashboard");
+          router.push(getRoleRedirectRoute(userRole));
           router.refresh();
           return;
         } else {
@@ -146,6 +158,7 @@ export default function LoginPage() {
         body: JSON.stringify({
           email: formData.email,
           idToken: idToken,
+          requestedRole: selectedRole,
         }),
       });
 
@@ -158,9 +171,7 @@ export default function LoginPage() {
         });
 
         const userRole = data.user?.role || selectedRole;
-        if (userRole === "admin") router.push("/admin");
-        else if (userRole === "user") router.push("/dashboard/marketplace");
-        else router.push("/dashboard");
+        router.push(getRoleRedirectRoute(userRole));
         router.refresh();
       } else {
         toast({
