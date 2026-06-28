@@ -23,7 +23,6 @@ export async function GET(
           `
         SELECT 
           u.id, u.name, u.avatar, u.email, u.createdAt, u.showPets, u.showEmail,
-          (SELECT COUNT(*) FROM posts WHERE userId = u.id AND isPublic = 1) AS postsCount,
           (SELECT COUNT(*) FROM pets WHERE userId = u.id AND isActive = 1) AS petsCount
         FROM users u
         WHERE u.id = ?
@@ -39,7 +38,6 @@ export async function GET(
           `
         SELECT 
           u.id, u.name, u.avatar, u.email, u.createdAt, 1 as showPets, 0 as showEmail,
-          (SELECT COUNT(*) FROM posts WHERE userId = u.id AND isPublic = 1) AS postsCount,
           (SELECT COUNT(*) FROM pets WHERE userId = u.id AND isActive = 1) AS petsCount
         FROM users u
         WHERE u.id = ?
@@ -69,40 +67,6 @@ export async function GET(
       }
     }
 
-    // Get user's recent posts with counts
-    const recentPosts = await db
-      .prepare(
-        `
-      SELECT 
-        p.*,
-        u.id AS user_id, u.name AS user_name, u.avatar AS user_avatar,
-        (SELECT COUNT(*) FROM reactions WHERE postId = p.id) AS likes_count,
-        (SELECT COUNT(*) FROM comments WHERE postId = p.id) AS comments_count
-      FROM posts p
-      LEFT JOIN users u ON p.userId = u.id
-      WHERE p.userId = ? AND p.isPublic = 1
-      ORDER BY p.createdAt DESC
-      LIMIT 10
-    `,
-      )
-      .bind(id)
-      .all<Record<string, unknown>>();
-
-    const formattedPosts = recentPosts.map((post: any) => ({
-      ...post,
-      images: post.images ? JSON.parse(post.images as string) : [],
-      videos: post.videos ? JSON.parse(post.videos as string) : [],
-      user: {
-        id: post.user_id,
-        name: post.user_name,
-        avatar: post.user_avatar,
-      },
-      _count: {
-        likes: post.likes_count,
-        comments: post.comments_count,
-      },
-    }));
-
     return NextResponse.json({
       success: true,
       user: {
@@ -114,10 +78,8 @@ export async function GET(
         showPets: user.showPets,
         showEmail: user.showEmail,
         _count: {
-          posts: user.postsCount,
           pets: user.petsCount,
         },
-        recentPosts: formattedPosts,
         pets: pets,
       },
     });

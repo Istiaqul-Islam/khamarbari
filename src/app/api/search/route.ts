@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const q = searchParams.get("q");
 
     if (!q || q.length < 2) {
-      return NextResponse.json({ success: true, users: [], posts: [] });
+      return NextResponse.json({ success: true, users: [] });
     }
 
     const searchTerm = `%${q}%`;
@@ -21,27 +21,9 @@ export async function GET(request: NextRequest) {
       [searchTerm, searchTerm]
     );
 
-    // 2. Search Posts
-    const posts = await queryDb<any>(
-      `SELECT p.id, p.content, p.images, p.videos, p.createdAt, u.name as user_name, u.avatar as user_avatar 
-       FROM posts p 
-       JOIN users u ON p.userId = u.id 
-       WHERE p.content LIKE ? AND p.isPublic = 1 
-       LIMIT 10`,
-      [searchTerm]
-    );
-
-    const formattedPosts = posts.map(post => ({
-      ...post,
-      images: post.images ? JSON.parse(post.images) : [],
-      videos: post.videos ? JSON.parse(post.videos) : [],
-      user: { name: post.user_name, avatar: post.user_avatar }
-    }));
-
     return NextResponse.json({
       success: true,
       users,
-      posts: formattedPosts
     });
   } catch (error) {
     console.error("Search API Error:", error);

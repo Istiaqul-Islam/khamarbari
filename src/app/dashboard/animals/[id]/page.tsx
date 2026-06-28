@@ -159,7 +159,7 @@ export default function PetDetailPage({ params }: { params: Promise<{ id: string
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
@@ -190,7 +190,7 @@ export default function PetDetailPage({ params }: { params: Promise<{ id: string
       </div>
 
       {/* Pet Hero Section */}
-      <Card className="pet-hero overflow-hidden border-none bg-gradient-to-br from-primary/5 via-background to-primary/10">
+      <Card className="pet-hero overflow-hidden border-none bg-linear-to-br from-primary/5 via-background to-primary/10">
         <CardContent className="p-8">
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
             <div className="relative">
@@ -261,7 +261,7 @@ export default function PetDetailPage({ params }: { params: Promise<{ id: string
 
       {/* Details Tabs */}
       <Tabs defaultValue="vaccinations" className="pet-content-tabs w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
+        <TabsList className="grid w-full grid-cols-2 lg:w-100">
           <TabsTrigger value="vaccinations" className="gap-2">
             <Syringe className="h-4 w-4" />
             Vaccinations
@@ -288,7 +288,7 @@ export default function PetDetailPage({ params }: { params: Promise<{ id: string
                 <div className="relative border-l-2 border-primary/20 ml-3 pl-8 space-y-8 py-4">
                   {vaccinations.map((v, i) => (
                     <div key={i} className="relative">
-                      <div className="absolute -left-[41px] top-0 h-6 w-6 rounded-full bg-primary border-4 border-background shadow-sm" />
+                      <div className="absolute -left-10.25 top-0 h-6 w-6 rounded-full bg-primary border-4 border-background shadow-sm" />
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="space-y-1">
                           <h4 className="text-lg font-bold">{v.name}</h4>

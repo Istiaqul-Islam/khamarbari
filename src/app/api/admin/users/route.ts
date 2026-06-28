@@ -26,8 +26,7 @@ export async function GET(request: NextRequest) {
       SELECT 
         u.id, u.name, u.email, u.avatar, u.phone, u.role, u.createdAt,
         (SELECT COUNT(*) FROM pets WHERE userId = u.id AND isActive = 1) AS petsCount,
-        (SELECT COUNT(*) FROM appointments WHERE userId = u.id) AS appointmentsCount,
-        (SELECT COUNT(*) FROM posts WHERE userId = u.id) AS postsCount
+        (SELECT COUNT(*) FROM appointments WHERE userId = u.id) AS appointmentsCount
       FROM users u
     `;
     const params: unknown[] = [];
@@ -53,7 +52,6 @@ export async function GET(request: NextRequest) {
       _count: {
         livestock: Number(row.petsCount || 0),
         appointments: Number(row.appointmentsCount || 0),
-        posts: Number(row.postsCount || 0),
       },
     }));
 

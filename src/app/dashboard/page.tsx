@@ -26,7 +26,6 @@ interface DashboardStats {
   totalLivestock: number;
   totalAppointments: number;
   upcomingVaccinations: number;
-  totalPosts: number;
 }
 
 interface Pet {
@@ -357,7 +356,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card className="dashboard-stat-card card-accent-green stat-card">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider stat-title">Total Livestock</CardTitle>
@@ -392,18 +391,6 @@ export default function DashboardPage() {
           <CardContent>
             <div className="text-3xl font-bold tracking-tight stat-value">{stats?.upcomingVaccinations || 0}</div>
             <p className="text-xs text-muted-foreground mt-1 stat-description">Pending health checks</p>
-          </CardContent>
-        </Card>
-        <Card className="dashboard-stat-card card-accent-green stat-card">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider stat-title">Social Posts</CardTitle>
-            <div className="p-2 bg-primary/10 rounded-lg stat-icon">
-              <Users className="h-4 w-4 text-primary" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold tracking-tight stat-value">{stats?.totalPosts || 0}</div>
-            <p className="text-xs text-muted-foreground mt-1 stat-description">Community interactions</p>
           </CardContent>
         </Card>
       </div>

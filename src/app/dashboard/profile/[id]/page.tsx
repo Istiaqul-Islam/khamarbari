@@ -50,10 +50,8 @@ interface PublicUser {
   updatedAt: string;
   pets?: Pet[];
   _count: {
-    posts: number;
     pets: number;
   };
-  recentPosts: any[];
 }
 
 export default function PublicProfilePage() {
@@ -148,13 +146,7 @@ export default function PublicProfilePage() {
             </div>
 
             <div className="flex gap-2">
-              <div className="text-center px-4 py-2 bg-background rounded-2xl border shadow-sm">
-                <p className="text-xl font-bold">{user._count.posts}</p>
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
-                  Posts
-                </p>
-              </div>
-              <div className="text-center px-4 py-2 bg-background rounded-2xl border shadow-sm">
+              <div className="text-center px-6 py-2 bg-background rounded-2xl border shadow-sm">
                 <p className="text-xl font-bold">{user._count.pets}</p>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
                   Pets
@@ -241,91 +233,29 @@ export default function PublicProfilePage() {
           </Card>
         </div>
 
-        {/* Main Content (Posts) */}
+        {/* Main Content (Contact details / Profile details) */}
         <div className="lg:col-span-2">
-          <Tabs defaultValue="posts" className="w-full">
-            <TabsList className="bg-muted/50 p-1 rounded-2xl w-full justify-start gap-2 h-auto">
-              <TabsTrigger
-                value="posts"
-                className="rounded-xl px-6 py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
-              >
-                Posts
-              </TabsTrigger>
-              <TabsTrigger
-                value="info"
-                className="rounded-xl px-6 py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
-              >
-                Contact
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="posts" className="mt-6 space-y-6">
-              {user.recentPosts.length > 0 ? (
-                user.recentPosts.map((post: any) => (
-                  <Card
-                    key={post.id}
-                    className="border-none shadow-sm rounded-2xl p-4 hover:shadow-md transition-all"
-                  >
-                    {post.content && (
-                      <p className="mb-4 text-card-foreground leading-relaxed">
-                        {post.content}
-                      </p>
-                    )}
-                    {post.images?.length > 0 && (
-                      <div className="grid grid-cols-2 gap-2 rounded-xl overflow-hidden mb-4">
-                        {post.images
-                          .slice(0, 4)
-                          .map((img: string, i: number) => (
-                            <img
-                              key={i}
-                              src={img}
-                              className="h-32 w-full object-cover"
-                            />
-                          ))}
-                      </div>
-                    )}
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground font-bold">
-                      <span className="flex items-center gap-1">
-                        <Heart className="h-3 w-3" /> {post._count.likes} Likes
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MessageSquare className="h-3 w-3" />{" "}
-                        {post._count.comments} Comments
-                      </span>
-                    </div>
-                  </Card>
-                ))
-              ) : (
-                <div className="text-center py-20 bg-muted/20 rounded-3xl border-2 border-dashed">
-                  <p className="text-muted-foreground font-medium">
-                    No posts shared yet.
+          <Card className="rounded-2xl shadow-sm border-none p-6">
+            <h3 className="font-bold text-lg mb-4">Contact Information</h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              Contact info is only visible if the user has made it public.
+            </p>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-primary/10 rounded-xl">
+                  <Mail className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase text-muted-foreground">
+                    Email
+                  </p>
+                  <p className="font-medium">
+                    {user.email || "Not shared"}
                   </p>
                 </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="info" className="mt-6">
-              <Card className="rounded-2xl shadow-sm border-none p-6">
-                <h3 className="font-bold mb-4">Contact Information</h3>
-                <p className="text-sm text-muted-foreground mb-6">
-                  Contact info is only visible if the user has made it public.
-                </p>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5 text-primary" />
-                    <div>
-                      <p className="text-[10px] font-bold uppercase text-muted-foreground">
-                        Email
-                      </p>
-                      <p className="font-medium">
-                        {user.email || "Not shared"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
-          </Tabs>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
     </div>

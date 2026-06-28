@@ -168,28 +168,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        {stats.map((stat, i) => (
-          <Card key={i} className="border-primary/10 bg-background/80 shadow-sm">
-            <CardContent className="pt-6 text-center">
-              {loading ? (
-                <div className="h-12 flex flex-col items-center justify-center space-y-2">
-                  <div className="h-6 w-16 bg-muted animate-pulse rounded" />
-                  <div className="h-3 w-20 bg-muted animate-pulse rounded" />
-                </div>
-              ) : (
-                <>
-                  <p className="text-3xl font-bold text-primary">
-                    {stat.value}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </section>
 
       {/* Features */}
       <section className="rounded-[2rem] border border-primary/10 bg-muted/20 p-6 sm:p-8">

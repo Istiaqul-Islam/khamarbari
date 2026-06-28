@@ -659,10 +659,10 @@ export default function VaccinationsPage() {
         </div>
         <Select value={filterPetId} onValueChange={setFilterPetId}>
           <SelectTrigger className="w-full sm:w-50 filter-select">
-            <SelectValue placeholder="Filter by pet" />
+            <SelectValue placeholder="Filter by animal" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Pets</SelectItem>
+            <SelectItem value="all">All Animals</SelectItem>
             {pets.map((pet) => (
               <SelectItem key={pet.id} value={pet.id}>
                 {pet.name}
@@ -694,7 +694,7 @@ export default function VaccinationsPage() {
                 </h3>
                 <p className="text-muted-foreground mb-4">
                   {pets.length === 0
-                    ? "Add a pet first to track vaccinations"
+                    ? "Add an animal first to track vaccinations"
                     : "Add your first vaccination record"}
                 </p>
                 {pets.length > 0 && (
@@ -889,9 +889,9 @@ export default function VaccinationsPage() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Pet Selection */}
+            {/* Animal Selection */}
             <div className="space-y-2">
-              <Label htmlFor="petId">Pet *</Label>
+              <Label htmlFor="petId">Animal *</Label>
               <Select
                 value={formData.petId}
                 onValueChange={(value) => {

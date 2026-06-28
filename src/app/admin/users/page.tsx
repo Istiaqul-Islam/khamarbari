@@ -42,7 +42,6 @@ interface AdminUser {
   _count: {
     livestock: number;
     appointments: number;
-    posts: number;
   };
 }
 
@@ -273,18 +272,12 @@ export default function AdminUsersPage() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 py-4 border-t border-primary/5">
-                    <div className="text-center">
+                  <div className="grid grid-cols-2 gap-2 py-4 border-t border-primary/5">
+                    <div className="text-center border-r border-primary/5">
                       <p className="text-[10px] uppercase font-black text-muted-foreground tracking-widest mb-1">
                         Livestock
                       </p>
                       <p className="font-black text-lg">{user._count.livestock}</p>
-                    </div>
-                    <div className="text-center border-x border-primary/5">
-                      <p className="text-[10px] uppercase font-black text-muted-foreground tracking-widest mb-1">
-                        Posts
-                      </p>
-                      <p className="font-black text-lg">{user._count.posts}</p>
                     </div>
                     <div className="text-center">
                       <p className="text-[10px] uppercase font-black text-muted-foreground tracking-widest mb-1">

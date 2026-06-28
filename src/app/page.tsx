@@ -1062,22 +1062,6 @@ export default function LandingPage() {
                 <a href="#features">Learn More</a>
               </Button>
             </div>
-
-            <div id="plans" className="mt-8 grid w-full gap-4 md:grid-cols-3">
-              {subscriptionPlans.map((plan) => (
-                <Link key={plan.name} href="/" className="group rounded-2xl border border-primary/15 bg-background/80 p-4 text-left shadow-sm transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-md">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-primary">{plan.name}</span>
-                    <Badge variant="secondary">{plan.badge}</Badge>
-                  </div>
-                  <p className="mt-3 text-3xl font-black">৳{plan.price}</p>
-                  <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
-                  <span className="mt-4 inline-flex items-center text-sm font-medium text-primary">
-                    View plan <ArrowRight className="ml-1 h-4 w-4 transition group-hover:translate-x-1" />
-                  </span>
-                </Link>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -1122,57 +1106,6 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Stats Section - Real Data */}
-      <section className="border-y bg-muted/30 stats-container">
-        <div className="container mx-auto px-4 py-12">
-          {loadingStats ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="text-center stat-item">
-                  <Skeleton className="h-8 w-20 mx-auto mb-2" />
-                  <Skeleton className="h-4 w-24 mx-auto" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <div className="text-center stat-item">
-                <p className="text-3xl md:text-4xl font-bold text-primary">
-                  {stats ? formatNumber(stats.totalUsers) : "10,000+"}
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Happy Farmers
-                </p>
-              </div>
-              <div className="text-center stat-item">
-                <p className="text-3xl md:text-4xl font-bold text-primary">
-                  {stats ? formatNumber(stats.totalVets) : "500+"}
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Partner Veterinarians
-                </p>
-              </div>
-              <div className="text-center stat-item">
-                <p className="text-3xl md:text-4xl font-bold text-primary">
-                  {stats ? formatNumber(stats.totalLivestock) : "50,000+"}
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Livestock Protected
-                </p>
-              </div>
-              <div className="text-center stat-item">
-                <p className="text-3xl md:text-4xl font-bold text-primary">
-                  {stats ? `${stats.avgRating.toFixed(1)}/5.0` : "4.8/5.0"}
-                </p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  User Satisfaction
-                </p>
-              </div>
-            </div>
-          )}
         </div>
       </section>
 
@@ -1271,6 +1204,45 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Plans Section */}
+      <section id="plans" className="py-20 md:py-32 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <Badge variant="outline" className="mb-4 section-badge">
+              Pricing
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 section-title">
+              Simple plans for every farm size
+            </h2>
+            <p className="text-lg text-muted-foreground section-description">
+              Choose the package that matches your needs, from first-time livestock owners to full-scale operations.
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+            {subscriptionPlans.map((plan) => (
+              <div key={plan.name} className="group rounded-2xl border border-primary/15 bg-background/80 p-6 text-left shadow-sm transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-md flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-primary">{plan.name}</span>
+                    <Badge variant="secondary">{plan.badge}</Badge>
+                  </div>
+                  <p className="mt-4 text-4xl font-black">৳{plan.price}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
+                </div>
+                <div className="mt-6">
+                  <Button asChild className="w-full">
+                    <Link href="/auth/signup" className="inline-flex items-center justify-center">
+                      Choose {plan.name}
+                      <ArrowRight className="ml-2 h-4 w-4 transition group-hover:translate-x-1" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* About Section */}
       <section id="about" className="py-20 md:py-32">
         <div className="container mx-auto px-4">
@@ -1287,42 +1259,6 @@ export default function LandingPage() {
               and more connected. Our mission is to help farmers provide the best
               possible care for their cattle, goats, buffaloes, sheep, and camels.
             </p>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-            <div className="text-center about-stat">
-              <p className="text-3xl md:text-4xl font-bold text-primary">
-                {stats ? formatNumber(stats.totalUsers) : "10,000+"}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Happy Farmers
-              </p>
-            </div>
-            <div className="text-center about-stat">
-              <p className="text-3xl md:text-4xl font-bold text-primary">
-                {stats ? formatNumber(stats.totalVets) : "500+"}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Partner Veterinarians
-              </p>
-            </div>
-            <div className="text-center about-stat">
-              <p className="text-3xl md:text-4xl font-bold text-primary">
-                {stats ? formatNumber(stats.totalLivestock) : "50,000+"}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Livestock Protected
-              </p>
-            </div>
-            <div className="text-center about-stat">
-              <p className="text-3xl md:text-4xl font-bold text-primary">
-                {stats ? `${stats.avgRating.toFixed(1)}/5.0` : "4.8/5.0"}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                User Satisfaction
-              </p>
-            </div>
           </div>
 
           {/* Features */}

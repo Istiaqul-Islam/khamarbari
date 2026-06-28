@@ -38,16 +38,10 @@ export async function GET() {
       .bind(session.userId)
       .first<{ count: number }>();
 
-    const postsCount = await db
-      .prepare("SELECT COUNT(*) as count FROM posts WHERE userId = ?")
-      .bind(session.userId)
-      .first<{ count: number }>();
-
     return NextResponse.json({
       totalPets: petsCount?.count || 0,
       totalAppointments: appointmentsCount?.count || 0,
       upcomingVaccinations: vaccinationsCount?.count || 0,
-      totalPosts: postsCount?.count || 0,
     });
   } catch (error) {
     console.error("Dashboard stats error:", error);

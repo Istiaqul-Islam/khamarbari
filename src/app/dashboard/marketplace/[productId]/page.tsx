@@ -38,8 +38,8 @@ export default function ProductDetailPage({ params }: Props) {
     const loadProduct = async () => {
       try {
         const [productRes, userRes] = await Promise.all([fetch(`/api/marketplace/products?id=${params.productId}`), fetch("/api/user")]);
-        const productData = await productRes.json();
-        const userData = await userRes.json();
+        const productData = (await productRes.json()) as any;
+        const userData = (await userRes.json()) as any;
         if (productData.success && productData.data?.[0]) {
           setProduct(productData.data[0]);
         }
