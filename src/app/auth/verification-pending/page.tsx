@@ -55,9 +55,26 @@ export default function VerificationPendingPage() {
           }),
         });
 
-        if (response.ok) {
-          toast({ title: "Success", description: "Email verified! Taking you to dashboard." });
-          router.push("/dashboard");
+        const data = (await response.json()) as { success?: boolean; user?: { role?: string }; error?: string };
+
+        if (response.ok && data.success) {
+          const userRole = data.user?.role || "user";
+          const getRoleRedirectRoute = (role?: string) => {
+            switch (role) {
+              case "admin":
+                return "/admin";
+              case "receptionist":
+                return "/dashboard/receptionist";
+              case "livestock_farmer":
+                return "/dashboard";
+              case "user":
+              default:
+                return "/dashboard/marketplace";
+            }
+          };
+
+          toast({ title: "Success", description: "Email verified! Taking you to your workspace." });
+          router.push(getRoleRedirectRoute(userRole));
           router.refresh();
         } else {
           toast({ title: "Wait", description: "Firebase is verified, but session sync failed. Try logging in again." });

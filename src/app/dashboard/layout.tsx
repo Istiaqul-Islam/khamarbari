@@ -78,10 +78,36 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  const isMarketplaceUserRouteAllowed = (currentPathname: string) => {
+    if (currentPathname === "/dashboard" || currentPathname === "/dashboard/") {
+      return false;
+    }
+
+    return (
+      currentPathname === "/dashboard/marketplace" ||
+      currentPathname === "/dashboard/feedback" ||
+      currentPathname === "/dashboard/about" ||
+      currentPathname.startsWith("/dashboard/marketplace/")
+    );
+  };
+
   useEffect(() => {
     setMounted(true);
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (!mounted || loading || !user) return;
+
+    if (user.isVerified === 0 && user.role !== "admin" && pathname !== "/auth/verification-pending") {
+      router.replace("/auth/verification-pending");
+      return;
+    }
+
+    if (user.role === "user" && !isMarketplaceUserRouteAllowed(pathname)) {
+      router.replace("/dashboard/marketplace");
+    }
+  }, [mounted, loading, pathname, router, user]);
 
   const fetchUser = async () => {
     try {
@@ -90,9 +116,9 @@ export default function DashboardLayout({
         const data = (await response.json()) as { user?: User };
         const userData = data.user || null;
         setUser(userData);
-        
-        if (userData && userData.isVerified === 0 && userData.role !== "admin" && pathname !== "/auth/verification-pending") {
-          router.push("/auth/verification-pending");
+
+        if (!userData) {
+          router.push("/auth/login");
         }
       } else {
         router.push("/auth/login");
