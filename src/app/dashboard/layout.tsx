@@ -85,6 +85,7 @@ export default function DashboardLayout({
 
     return (
       currentPathname === "/dashboard/marketplace" ||
+      currentPathname === "/dashboard/profile" ||
       currentPathname === "/dashboard/feedback" ||
       currentPathname === "/dashboard/about" ||
       currentPathname.startsWith("/dashboard/marketplace/")

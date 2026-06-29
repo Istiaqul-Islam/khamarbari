@@ -7,8 +7,56 @@ function getLatestUserMessage(messages: Array<{ role?: string; content?: string 
   return messages.filter((message) => message.role === "user").slice(-1)[0]?.content || "";
 }
 
+function isDomainQuery(message: string) {
+  const lower = message.toLowerCase();
+  const domainKeywords = [
+    "cattle",
+    "cow",
+    "goat",
+    "sheep",
+    "livestock",
+    "vaccin",
+    "fever",
+    "mastitis",
+    "fmd",
+    "foot",
+    "mouth",
+    "diet",
+    "feed",
+    "nutrition",
+    "temperature",
+    "milk",
+    "steps",
+    "sleep",
+    "ruminat",
+    "faeces",
+    "faecal",
+    "blood",
+    "diarrhea",
+    "infection",
+    "parasite",
+    "health",
+    "vet",
+    "vaccination",
+    "udder",
+    "dairy",
+    "herd",
+    "animal",
+  ];
+  return domainKeywords.some((keyword) => lower.includes(keyword));
+}
+
+function isIntroQuery(message: string) {
+  const lower = message.toLowerCase();
+  return ["who are you", "introduce yourself", "what are you", "your name", "what do you do"].some((phrase) => lower.includes(phrase));
+}
+
 function buildKnowledgeResponse(message: string) {
   const lower = message.toLowerCase();
+
+  if (!isDomainQuery(message) && !isIntroQuery(message)) {
+    return "I can only help with livestock health, vaccination, and nutrition questions. I’m unable to assist with that topic.";
+  }
 
   // 1. Analyze temperature
   let tempMatch = lower.match(/(\d+(\.\d+)?)\s*(°c|c|degree|temp)/);
@@ -86,7 +134,7 @@ function buildKnowledgeResponse(message: string) {
   }
 
   // Default structured knowledge base answers
-  if (lower.includes("who are you") || lower.includes("introduce yourself")) {
+  if (isIntroQuery(message)) {
     return "I’m KhamarBari AI, your professional livestock care assistant. I can help with animal health, vaccination schedules, disease basics (like Mastitis or FMD), diet/nutrition, and platform navigation based on livestock health datasets.";
   }
 
@@ -141,6 +189,10 @@ export async function POST(req: NextRequest) {
     }
 
     const latestUserMessage = getLatestUserMessage(messages as Array<{ role?: string; content?: string }>);
+
+    if (!isDomainQuery(latestUserMessage) && !isIntroQuery(latestUserMessage)) {
+      return NextResponse.json({ response: "I can only help with livestock health, vaccination, and nutrition questions. I’m unable to assist with that topic." });
+    }
 
     const systemPrompt = `You are KhamarBari AI, a professional livestock care assistant specializing in cattle and ruminant health for South Asian farmers.
 You have access to a clinical cattle health dataset with the following normal (healthy) and abnormal (unhealthy) reference ranges:

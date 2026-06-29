@@ -887,12 +887,14 @@ export default function LandingPage() {
                       Profile
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard/animals" className="cursor-pointer">
-                      <CowIcon className="mr-2 h-4 w-4" />
-                      My Animals
-                    </Link>
-                  </DropdownMenuItem>
+                  {user.role !== "user" && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/animals" className="cursor-pointer">
+                        <CowIcon className="mr-2 h-4 w-4" />
+                        My Animals
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   {user.role === "admin" && (
                     <>
                       <DropdownMenuSeparator />
@@ -973,7 +975,9 @@ export default function LandingPage() {
                     asChild
                     className="w-full mobile-btn"
                   >
-                    <Link href="/dashboard">Dashboard</Link>
+                    <Link href={user.role === "user" ? "/dashboard/marketplace" : "/dashboard"}>
+                      Dashboard
+                    </Link>
                   </Button>
                   <Button
                     variant="ghost"
@@ -1036,7 +1040,7 @@ export default function LandingPage() {
                   asChild
                   className="bg-primary hover:bg-primary/90 text-lg px-8 hero-primary-btn"
                 >
-                  <Link href="/dashboard">
+                  <Link href={user.role === "user" ? "/dashboard/marketplace" : "/dashboard"}>
                     Go to Dashboard
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
