@@ -154,7 +154,7 @@ export default function AboutPage() {
   return (
     <div className="space-y-12 py-4">
       {/* Hero Section */}
-      <section className="mx-auto max-w-5xl rounded-[2rem] border border-primary/10 bg-gradient-to-br from-primary/10 via-background to-emerald-500/10 p-8 shadow-2xl shadow-primary/10 sm:p-12">
+      <section className="mx-auto max-w-5xl rounded-4xl border border-primary/10 bg-linear-to-br from-primary/10 via-background to-emerald-500/10 p-8 shadow-2xl shadow-primary/10 sm:p-12">
         <div className="mx-auto max-w-3xl text-center">
           <Badge variant="secondary" className="mb-4 rounded-full px-4 py-1">
             About KhamarBari
@@ -170,7 +170,7 @@ export default function AboutPage() {
 
 
       {/* Features */}
-      <section className="rounded-[2rem] border border-primary/10 bg-muted/20 p-6 sm:p-8">
+      <section className="rounded-4xl border border-primary/10 bg-muted/20 p-6 sm:p-8">
         <div className="mb-8 max-w-2xl text-center mx-auto">
           <h2 className="text-2xl font-bold">What KhamarBari helps you do</h2>
           <p className="mt-2 text-muted-foreground">Every feature is built around practical everyday farm work, from routine care to business growth.</p>

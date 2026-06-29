@@ -178,7 +178,7 @@ export default function AdminAppointmentsPage() {
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by user, vet, or pet..."
+            placeholder="Search by user, vet, or animal..."
             className="pl-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -238,7 +238,7 @@ export default function AdminAppointmentsPage() {
                         <span>•</span>
                         <div className="flex items-center gap-1">
                           <Wheat className="h-3 w-3" />
-                          {apt.pet.name}
+                          {apt.pet.name} (Animal)
                         </div>
                         <span>•</span>
                         <div className="flex items-center gap-1">

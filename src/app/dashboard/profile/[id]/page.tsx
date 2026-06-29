@@ -149,7 +149,7 @@ export default function PublicProfilePage() {
               <div className="text-center px-6 py-2 bg-background rounded-2xl border shadow-sm">
                 <p className="text-xl font-bold">{user._count.pets}</p>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
-                  Pets
+                  Animals
                 </p>
               </div>
             </div>
@@ -180,12 +180,12 @@ export default function PublicProfilePage() {
             </CardContent>
           </Card>
 
-          {/* User's Pets Section */}
+          {/* User's Animals Section */}
           <Card className="rounded-2xl shadow-md border-none overflow-hidden">
             <CardHeader className="bg-primary/5">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-bold uppercase tracking-widest text-primary flex items-center gap-2">
-                  <PawPrint className="h-4 w-4" /> Pets
+                  <PawPrint className="h-4 w-4" /> Animals
                 </CardTitle>
               </div>
             </CardHeader>
@@ -215,7 +215,7 @@ export default function PublicProfilePage() {
                     ))
                   ) : (
                     <p className="text-xs text-center text-muted-foreground py-4 italic">
-                      No pets added yet.
+                      No animals added yet.
                     </p>
                   )}
                 </div>

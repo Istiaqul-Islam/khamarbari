@@ -366,7 +366,7 @@ export default function VetProfilePage() {
                 disabled={pets.length === 0}
               >
                 <Calendar className="h-4 w-4 mr-2" />
-                {pets.length === 0 ? "Add an animel first" : "Book Appointment"}
+                {pets.length === 0 ? "Add an animal first" : "Book Appointment"}
               </Button>
               {vet.phone && (
                 <Button variant="outline" className="w-full" asChild>

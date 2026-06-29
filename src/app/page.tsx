@@ -1117,7 +1117,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y bg-gradient-to-br from-emerald-500/5 via-background to-primary/5">
+      <section className="border-y bg-linear-to-br from-emerald-500/5 via-background to-primary/5">
         <div className="container mx-auto px-4 py-16">
           <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div className="space-y-4">

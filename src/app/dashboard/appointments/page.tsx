@@ -681,7 +681,7 @@ export default function AppointmentsPage() {
                     }}
                     disabled={pets.length === 0}
                   >
-                    {pets.length === 0 ? "Add an animel first" : "Book Appointment"}
+                    {pets.length === 0 ? "Add an animal first" : "Book Appointment"}
                   </Button>
                 </CardContent>
               </Card>
@@ -877,7 +877,7 @@ export default function AppointmentsPage() {
           <form onSubmit={handleBookAppointment} className="space-y-4">
             {/* Pet */}
             <div className="space-y-2">
-              <Label htmlFor="petId">Select Pet *</Label>
+              <Label htmlFor="petId">Select Animal *</Label>
               <Select
                 value={formData.petId}
                 onValueChange={(value) =>
@@ -886,7 +886,7 @@ export default function AppointmentsPage() {
                 required
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose your pet" />
+                  <SelectValue placeholder="Choose your animal" />
                 </SelectTrigger>
                 <SelectContent>
                   {pets.map((pet) => (

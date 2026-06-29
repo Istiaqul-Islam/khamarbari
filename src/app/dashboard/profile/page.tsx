@@ -757,7 +757,7 @@ export default function ProfilePage() {
                   <PawPrint className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-medium">Public Pet List</p>
+                  <p className="font-medium">Public Animal List</p>
                   <p className="text-sm text-muted-foreground">Show your livestock on your public profile</p>
                 </div>
               </div>
