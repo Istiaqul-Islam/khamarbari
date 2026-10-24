@@ -109,7 +109,7 @@ async function refineCoordinates(result: GeocodeResult, originalAddress: string)
     
     const response = await fetch(reverseUrl, {
       headers: {
-        'User-Agent': 'PetCarePro/1.0 (https://petcare-pro.pages.dev)'
+        'User-Agent': 'KhamarBari/1.0 (https://khamarbari.pages.dev)'
       }
     });
 
@@ -175,7 +175,7 @@ async function geocodeWithOSM(address: string): Promise<GeocodeResult | null> {
   
   const response = await fetch(url, {
     headers: {
-      'User-Agent': 'PetCarePro/1.0 (https://petcare-pro.pages.dev)'
+      'User-Agent': 'KhamarBari/1.0 (https://khamarbari.pages.dev)'
     }
   });
 

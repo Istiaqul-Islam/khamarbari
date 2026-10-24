@@ -1,7 +1,7 @@
 export const runtime = "edge";
 
 import { NextRequest, NextResponse } from "next/server";
-import { queryDb, executeDb, generateId, nowISO } from "@/lib/db";
+import { queryDb, queryDbFirst, executeDb, generateId, nowISO } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
@@ -48,11 +48,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
+    const user = await queryDbFirst("SELECT role FROM users WHERE id = ?", [session.userId]);
+    if (!user || !["livestock_farmer", "admin"].includes(String((user as any).role))) {
+      return NextResponse.json({ success: false, error: "Only livestock farmers and administrators can list products." }, { status: 403 });
+    }
+
     const body = (await request.json()) as any;
     const { title, description, category, price, unit, stock, images } = body;
+    const numericPrice = Number(price);
+    const numericStock = Number(stock);
+    const allowedCategories = ["milk_dairy", "fresh_meat", "live_animals", "animal_feed", "equipment"];
 
-    if (!title || !category || !price) {
-      return NextResponse.json({ success: false, error: "Title, category, and price are required" }, { status: 400 });
+    if (typeof title !== "string" || !title.trim() || title.length > 160 || !allowedCategories.includes(category)) {
+      return NextResponse.json({ success: false, error: "A valid product title and category are required." }, { status: 400 });
+    }
+    if (!Number.isFinite(numericPrice) || numericPrice <= 0 || !Number.isInteger(numericStock) || numericStock < 0) {
+      return NextResponse.json({ success: false, error: "Price must be positive and stock must be a non-negative whole number." }, { status: 400 });
     }
 
     const id = generateId();
@@ -62,7 +73,7 @@ export async function POST(request: NextRequest) {
     await executeDb(
       `INSERT INTO marketplace_products (id, farmerId, title, description, category, price, unit, stock, images, createdAt, updatedAt)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, session.userId, title, description || "", category, price, unit || "kg", stock || 1, imageJson, now, now],
+      [id, session.userId, title.trim(), description || "", category, numericPrice, unit || "kg", numericStock, imageJson, now, now],
     );
 
     return NextResponse.json({ success: true, message: "Product listed successfully", productId: id });

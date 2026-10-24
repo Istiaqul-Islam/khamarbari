@@ -137,6 +137,12 @@ CREATE TABLE IF NOT EXISTS marketplace_orders (
     totalAmount REAL NOT NULL,
     status TEXT DEFAULT 'pending', -- pending, processing, shipped, delivered, cancelled
     shippingAddress TEXT NOT NULL,
+    paymentMethod TEXT DEFAULT 'cash_on_delivery',
+    paymentStatus TEXT DEFAULT 'unpaid', -- unpaid, simulated_paid; never represents real gateway verification
+    customerName TEXT,
+    customerPhone TEXT,
+    customerEmail TEXT,
+    estimatedDelivery TEXT,
     createdAt TEXT DEFAULT (datetime('now')),
     updatedAt TEXT DEFAULT (datetime('now')),
     FOREIGN KEY (buyerId) REFERENCES users(id) ON DELETE CASCADE

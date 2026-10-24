@@ -2,7 +2,7 @@
 
 export const runtime = "edge";
 
-import { useEffect, useMemo, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ShoppingCart, Store, Truck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -25,10 +25,11 @@ interface Product {
 }
 
 interface Props {
-  params: { productId: string };
+  params: Promise<{ productId: string }>;
 }
 
 export default function ProductDetailPage({ params }: Props) {
+  const { productId } = use(params);
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +38,7 @@ export default function ProductDetailPage({ params }: Props) {
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const [productRes, userRes] = await Promise.all([fetch(`/api/marketplace/products?id=${params.productId}`), fetch("/api/user")]);
+        const [productRes, userRes] = await Promise.all([fetch(`/api/marketplace/products?id=${productId}`), fetch("/api/user")]);
         const productData = (await productRes.json()) as any;
         const userData = (await userRes.json()) as any;
         if (productData.success && productData.data?.[0]) {
@@ -54,7 +55,7 @@ export default function ProductDetailPage({ params }: Props) {
     };
 
     loadProduct();
-  }, [params.productId]);
+  }, [productId]);
 
   const isOwnListing = useMemo(() => Boolean(currentUserId && product?.farmerId === currentUserId), [currentUserId, product]);
 
@@ -68,7 +69,19 @@ export default function ProductDetailPage({ params }: Props) {
       toast({ title: "Out of stock", description: "This listing is currently unavailable.", variant: "destructive" });
       return;
     }
-    toast({ title: "Added to cart", description: `${product.title} is ready for checkout.` });
+    try {
+      const key = "khamarbari-marketplace-cart";
+      const saved = sessionStorage.getItem(key);
+      const cart = saved ? JSON.parse(saved) : [];
+      const existing = cart.find((item: any) => item.product?.id === product.id);
+      const nextCart = existing
+        ? cart.map((item: any) => item.product?.id === product.id ? { ...item, quantity: Math.min(item.quantity + 1, product.stock) } : item)
+        : [...cart, { product, quantity: 1 }];
+      sessionStorage.setItem(key, JSON.stringify(nextCart));
+      toast({ title: "Added to cart", description: `${product.title} is ready for checkout. Open the marketplace cart to continue.` });
+    } catch {
+      toast({ title: "Could not update cart", description: "Please return to the marketplace and try again.", variant: "destructive" });
+    }
   };
 
   if (loading) {

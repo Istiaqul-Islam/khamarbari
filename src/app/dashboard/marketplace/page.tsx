@@ -56,11 +56,9 @@ export default function MarketplacePage() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [shippingAddress, setShippingAddress] = useState("");
-  const [placingOrder, setPlacingOrder] = useState(false);
+  const [cartReady, setCartReady] = useState(false);
   const [userRole, setUserRole] = useState<string>("user");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState("cash_on_delivery");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -79,6 +77,21 @@ export default function MarketplacePage() {
     fetchProducts();
     fetchUserProfile();
   }, [selectedCategory]);
+
+  useEffect(() => {
+    try {
+      const savedCart = sessionStorage.getItem("khamarbari-marketplace-cart");
+      if (savedCart) setCart(JSON.parse(savedCart));
+    } catch {
+      sessionStorage.removeItem("khamarbari-marketplace-cart");
+    } finally {
+      setCartReady(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (cartReady) sessionStorage.setItem("khamarbari-marketplace-cart", JSON.stringify(cart));
+  }, [cart, cartReady]);
 
   const fetchUserProfile = async () => {
     try {
@@ -174,47 +187,6 @@ export default function MarketplacePage() {
   };
 
   const totalCartAmount = useMemo(() => cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0), [cart]);
-
-  const handlePlaceOrder = async () => {
-    if (!shippingAddress.trim()) {
-      toast({ title: "Shipping address required", description: "Please enter your delivery address before confirming the order.", variant: "destructive" });
-      return;
-    }
-
-    if (cart.length === 0) {
-      toast({ title: "Cart is empty", description: "Add at least one listing before placing an order.", variant: "destructive" });
-      return;
-    }
-
-    setPlacingOrder(true);
-    try {
-      const payload = {
-        items: cart.map((item) => ({ productId: item.product.id, quantity: item.quantity, price: item.product.price })),
-        totalAmount: totalCartAmount,
-        shippingAddress,
-        paymentMethod,
-      };
-
-      const res = await fetch("/api/marketplace/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = (await res.json()) as any;
-      if (data.success) {
-        setCart([]);
-        setShippingAddress("");
-        toast({ title: "Order confirmed", description: "Your order request has been recorded. The seller will contact you shortly." });
-      } else {
-        toast({ title: "Order failed", description: data.error, variant: "destructive" });
-      }
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } finally {
-      setPlacingOrder(false);
-    }
-  };
 
   const handleCreateProduct = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -413,7 +385,7 @@ export default function MarketplacePage() {
                     <Label>Image</Label>
                     <div className="flex items-center gap-2">
                       <Button type="button" variant="outline" className="gap-2" onClick={() => document.getElementById("marketplace-image-upload")?.click()} disabled={uploadingImage}>
-                        <ImagePlus className="h-4 w-4" /> {uploadingImage ? "Uploading..." : "Upload with ImgBB"}
+                        <ImagePlus className="h-4 w-4" /> {uploadingImage ? "Uploading..." : "Upload"}
                       </Button>
                       <input id="marketplace-image-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                     </div>
@@ -482,35 +454,16 @@ export default function MarketplacePage() {
                       </div>
                     ))}
 
-                    <div className="rounded-xl border bg-muted/30 p-3">
-                      <div className="flex items-center gap-2 text-sm font-medium">
-                        <Truck className="h-4 w-4 text-primary" /> Payment method (UI only)
-                      </div>
-                      <div className="mt-2 grid grid-cols-2 gap-2">
-                        <Button variant={paymentMethod === "cash_on_delivery" ? "default" : "outline"} size="sm" onClick={() => setPaymentMethod("cash_on_delivery")}>Cash on delivery</Button>
-                        <Button variant={paymentMethod === "digital_wallet" ? "default" : "outline"} size="sm" onClick={() => setPaymentMethod("digital_wallet")}>Digital wallet (soon)</Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 border-t pt-4">
-                      <Label>Delivery address</Label>
-                      <Input value={shippingAddress} onChange={(event) => setShippingAddress(event.target.value)} placeholder="Enter your full address" />
+                    <div className="rounded-xl border bg-muted/30 p-4 space-y-3">
+                      <p className="text-sm text-muted-foreground">Review your cart and continue to checkout to enter delivery details and choose a payment method.</p>
+                      <Button className="w-full" onClick={() => { sessionStorage.setItem("khamarbari-marketplace-cart", JSON.stringify(cart)); window.location.href = "/dashboard/marketplace/checkout"; }}>
+                        Continue to checkout <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 )}
               </div>
 
-              {cart.length > 0 && (
-                <div className="space-y-3 border-t pt-4">
-                  <div className="flex items-center justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span className="text-primary">৳{totalCartAmount}</span>
-                  </div>
-                  <Button className="w-full py-6 font-semibold" onClick={handlePlaceOrder} disabled={placingOrder}>
-                    {placingOrder ? "Confirming order..." : "Confirm order"}
-                  </Button>
-                </div>
-              )}
             </SheetContent>
           </Sheet>
         </div>
