@@ -27,6 +27,9 @@ export async function GET() {
       success: true,
       stats: {
         totalUsers: totalUsers?.count || 0,
+        // Public-facing name used by the homepage and About page.
+        totalLivestock: totalPets?.count || 0,
+        // Keep the existing key for any other consumers of this endpoint.
         totalPets: totalPets?.count || 0,
         totalVets: totalVets?.count || 0,
         avgRating: avgFeedback?.avgRating || 0,
