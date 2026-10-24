@@ -87,9 +87,8 @@ interface PublicStats {
 }
 
 const subscriptionPlans = [
-  { name: "Starter", price: "59", description: "For small farms getting started", badge: "Good for basics" },
-  { name: "Pro", price: "99", description: "For active livestock owners and sellers", badge: "Most popular" },
-  { name: "Business", price: "250", description: "For larger operations and teams", badge: "Advanced tools" },
+  { name: "Free", price: "0", description: "List up to 5 active marketplace products", badge: "Free forever" },
+  { name: "Premium", price: "99", description: "List up to 200 active marketplace products", badge: "30 days" },
 ];
 
 const getRoleLabel = (role?: string) => {
@@ -771,13 +770,6 @@ export default function LandingPage() {
 
   const team = [
     {
-      name: "Md Atik Ishrak",
-      title: "Lecturer",
-      dept: "Dept. of Computer Science and Engineering",
-      role: "Mentor",
-      image: "/atik.jpg",
-    },
-    {
       name: "Istiaqul Islam Ifti",
       title: "CSE 031 08169",
       dept: "Dept. of Computer Science and Engineering",
@@ -785,18 +777,11 @@ export default function LandingPage() {
       image: "/istiaq.jpeg",
     },
     {
-      name: "Pushpita Dey",
-      title: "CSE 031 08170",
+      name: "Tasmia Habib",
+      title: "CSE 031 08199",
       dept: "Dept. of Computer Science and Engineering",
       role: "Designer & Developer",
-      image: "/puspita.jpg",
-    },
-    {
-      name: "Saifa Binte Aziz",
-      title: "CSE 031 08179",
-      dept: "Dept. of Computer Science and Engineering",
-      role: "Designer & Developer",
-      image: "/user.png",
+      image: "/tasmia.jpg",
     },
   ];
 
@@ -1270,10 +1255,10 @@ export default function LandingPage() {
               Simple plans for every farm size
             </h2>
             <p className="text-lg text-muted-foreground section-description">
-              Choose the package that matches your needs, from first-time livestock owners to full-scale operations.
+              One simple upgrade: more room to list your farm products. All other features stay the same.
             </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+          <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
             {subscriptionPlans.map((plan) => (
               <div key={plan.name} className="group rounded-2xl border border-primary/15 bg-background/80 p-6 text-left shadow-sm transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-md flex flex-col justify-between">
                 <div>
@@ -1281,13 +1266,13 @@ export default function LandingPage() {
                     <span className="text-sm font-semibold text-primary">{plan.name}</span>
                     <Badge variant="secondary">{plan.badge}</Badge>
                   </div>
-                  <p className="mt-4 text-4xl font-black">৳{plan.price}</p>
+                  <p className="mt-4 text-4xl font-black">৳{plan.price}<span className="ml-2 text-sm font-medium text-muted-foreground">{plan.name === "Premium" ? "/ 30 days" : "forever"}</span></p>
                   <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
                 </div>
                 <div className="mt-6">
                   <Button asChild className="w-full">
-                    <Link href="/auth/signup" className="inline-flex items-center justify-center">
-                      Choose {plan.name}
+                    <Link href={user ? (plan.name === "Premium" && user.role === "livestock_farmer" ? "/dashboard/subscription" : "/dashboard/marketplace") : "/auth/signup"} className="inline-flex items-center justify-center">
+                      {user ? (plan.name === "Premium" && user.role === "livestock_farmer" ? "Upgrade to Premium" : "Go to marketplace") : `Choose ${plan.name}`}
                       <ArrowRight className="ml-2 h-4 w-4 transition group-hover:translate-x-1" />
                     </Link>
                   </Button>
@@ -1339,7 +1324,7 @@ export default function LandingPage() {
             <h3 className="text-2xl font-bold text-center mb-8 section-title">
               Meet Our Team
             </h3>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 max-w-2xl mx-auto">
               {team.map((member, i) => (
                 <Card key={i} className="overflow-hidden group hover:shadow-xl transition-all duration-300 border-none bg-muted/20 about-feature">
                   <CardContent className="pt-8 text-center space-y-4">

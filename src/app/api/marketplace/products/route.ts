@@ -48,9 +48,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await queryDbFirst("SELECT role FROM users WHERE id = ?", [session.userId]);
-    if (!user || !["livestock_farmer", "admin"].includes(String((user as any).role))) {
+    const user = await queryDbFirst<any>("SELECT role, subscriptionPlan, subscriptionExpiresAt FROM users WHERE id = ?", [session.userId]);
+    if (!user || !["livestock_farmer", "admin"].includes(String(user.role))) {
       return NextResponse.json({ success: false, error: "Only livestock farmers and administrators can list products." }, { status: 403 });
+    }
+    if (user.role === "livestock_farmer") {
+      const expiry = user.subscriptionExpiresAt ? new Date(user.subscriptionExpiresAt).getTime() : 0;
+      const isPremium = user.subscriptionPlan === "premium" && expiry > Date.now();
+      if (user.subscriptionPlan === "premium" && !isPremium) {
+        await executeDb("UPDATE users SET subscriptionPlan = 'free', subscriptionCancelledAt = NULL WHERE id = ?", [session.userId]);
+      }
+      const listingLimit = isPremium ? 200 : 5;
+      const countRow = await queryDbFirst<any>("SELECT COUNT(*) AS count FROM marketplace_products WHERE farmerId = ?", [session.userId]);
+      if (Number(countRow?.count || 0) >= listingLimit) {
+        return NextResponse.json({ success: false, error: isPremium ? "Your Premium plan allows up to 200 active listings." : "Your Free plan allows up to 5 active listings. Upgrade to Premium for up to 200." , listingLimit, upgradeRequired: !isPremium }, { status: 409 });
+      }
     }
 
     const body = (await request.json()) as any;

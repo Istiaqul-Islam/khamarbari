@@ -17,6 +17,10 @@ CREATE TABLE IF NOT EXISTS users (
     firebaseMetadata TEXT,
     showPets INTEGER DEFAULT 1,
     showEmail INTEGER DEFAULT 0,
+    subscriptionPlan TEXT NOT NULL DEFAULT 'free',
+    subscriptionStartedAt TEXT,
+    subscriptionExpiresAt TEXT,
+    subscriptionCancelledAt TEXT,
     createdAt TEXT DEFAULT (datetime('now')),
     updatedAt TEXT DEFAULT (datetime('now'))
 );
@@ -153,11 +157,26 @@ CREATE TABLE IF NOT EXISTS marketplace_order_items (
     id TEXT PRIMARY KEY,
     orderId TEXT NOT NULL,
     productId TEXT NOT NULL,
+    productTitle TEXT,
+    productImage TEXT,
     quantity INTEGER NOT NULL DEFAULT 1,
     price REAL NOT NULL,
-    FOREIGN KEY (orderId) REFERENCES marketplace_orders(id) ON DELETE CASCADE,
-    FOREIGN KEY (productId) REFERENCES marketplace_products(id) ON DELETE CASCADE
+    FOREIGN KEY (orderId) REFERENCES marketplace_orders(id) ON DELETE CASCADE
 );
+CREATE INDEX IF NOT EXISTS idx_marketplace_order_items_orderId ON marketplace_order_items(orderId);
+
+-- Subscription payment records (local checkout preview; no gateway credentials are stored)
+CREATE TABLE IF NOT EXISTS marketplace_subscription_payments (
+    id TEXT PRIMARY KEY,
+    userId TEXT NOT NULL,
+    amount REAL NOT NULL DEFAULT 99,
+    accountNumber TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'preview_completed',
+    createdAt TEXT NOT NULL,
+    expiresAt TEXT NOT NULL,
+    FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_subscription_payments_userId ON marketplace_subscription_payments(userId);
 
 -- 9. Feedbacks table
 CREATE TABLE IF NOT EXISTS feedbacks (

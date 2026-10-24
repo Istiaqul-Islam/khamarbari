@@ -331,6 +331,7 @@ export default function MarketplacePage() {
           <p className="mt-1 text-muted-foreground">
             Buy fresh produce, dairy, livestock, and supplies directly from trusted farmers.
           </p>
+          {(userRole === "livestock_farmer" || userRole === "admin") && <p className="mt-2 text-sm text-muted-foreground">Manage your farm listings here. Free farmers can list 5 products; Premium supports up to 200.</p>}
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -400,6 +401,8 @@ export default function MarketplacePage() {
               </DialogContent>
             </Dialog>
           )}
+
+          <Button variant="outline" asChild className="gap-2"><Link href="/dashboard/marketplace/orders"><Package className="h-4 w-4"/><span className="hidden sm:inline">My Orders</span></Link></Button>
 
           <Sheet>
             <SheetTrigger asChild>

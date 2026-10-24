@@ -3,6 +3,7 @@
 export const runtime = "edge";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import {
   User,
@@ -15,6 +16,7 @@ import {
   Save,
   Calendar,
   Shield,
+  Crown,
   Eye,
   EyeOff,
 } from "lucide-react";
@@ -54,6 +56,10 @@ interface UserProfile {
   firebaseUid: string | null;
   createdAt: string;
   updatedAt: string;
+  subscriptionPlan?: string;
+  subscriptionStartedAt?: string | null;
+  subscriptionExpiresAt?: string | null;
+  subscriptionCancelledAt?: string | null;
 }
 
 const getRoleDisplay = (role?: string) => {
@@ -81,6 +87,7 @@ export default function ProfilePage() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
+  const [cancellingSubscription, setCancellingSubscription] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -504,6 +511,20 @@ export default function ProfilePage() {
     }
   };
 
+  const handleCancelSubscription = async () => {
+    if (!window.confirm("Cancel Premium renewal? Your Premium access will remain active until the expiry date.")) return;
+    setCancellingSubscription(true);
+    try {
+      const response = await fetch("/api/subscription", { method: "DELETE" });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || "Could not cancel subscription");
+      setUser((current) => current ? { ...current, subscriptionCancelledAt: data.cancelledAt } : null);
+      toast({ title: "Renewal cancelled", description: "Premium remains active until the expiry date." });
+    } catch (error) {
+      toast({ title: "Unable to cancel", description: error instanceof Error ? error.message : "Please try again.", variant: "destructive" });
+    } finally { setCancellingSubscription(false); }
+  };
+
   const getInitials = (name: string | null) => {
     if (!name) return "U";
     return name
@@ -673,6 +694,28 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
       </div>
+
+      {user?.role === "livestock_farmer" && (
+        <Card className="border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg"><Crown className="h-5 w-5 text-primary" />Marketplace subscription</CardTitle>
+            <CardDescription>Your plan controls only the number of active products you can list.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <Badge variant={user.subscriptionPlan === "premium" ? "default" : "secondary"}>{user.subscriptionPlan === "premium" ? "Premium" : "Free"}</Badge>
+                <span className="text-sm text-muted-foreground">{user.subscriptionPlan === "premium" ? "Up to 200 active listings" : "Up to 5 active listings"}</span>
+              </div>
+              {user.subscriptionPlan === "premium" && user.subscriptionExpiresAt && <p className="mt-2 text-sm text-muted-foreground">{user.subscriptionCancelledAt ? "Renewal cancelled · active until " : "Active until "}{new Date(user.subscriptionExpiresAt).toLocaleDateString("en-BD", { day: "numeric", month: "long", year: "numeric" })}</p>}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button asChild variant={user.subscriptionPlan === "premium" ? "outline" : "default"}><Link href="/dashboard/subscription">{user.subscriptionPlan === "premium" ? "Manage subscription" : "Upgrade · ৳99 / 30 days"}</Link></Button>
+              {user.subscriptionPlan === "premium" && !user.subscriptionCancelledAt && <Button variant="destructive" onClick={handleCancelSubscription} disabled={cancellingSubscription}>{cancellingSubscription ? "Cancelling…" : "Cancel subscription"}</Button>}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Security Section */}
       <Card className="security-card">

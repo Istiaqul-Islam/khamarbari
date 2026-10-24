@@ -103,13 +103,6 @@ export default function AboutPage() {
 
   const team = [
     {
-      name: "Md Atik Ishrak",
-      title: "Lecturer",
-      dept: "Dept. of Computer Science and Engineering",
-      role: "Mentor",
-      image: "/atik.jpg",
-    },
-    {
       name: "Istiaqul Islam Ifti",
       title: "CSE 031 08169",
       dept: "Dept. of Computer Science and Engineering",
@@ -117,18 +110,11 @@ export default function AboutPage() {
       image: "/istiaq.jpeg",
     },
     {
-      name: "Pushpita Dey",
-      title: "CSE 031 08170",
+      name: "Tasmia Habib",
+      title: "CSE 031 08199",
       dept: "Dept. of Computer Science and Engineering",
       role: "Designer & Developer",
-      image: "/puspita.jpg",
-    },
-    {
-      name: "Saifa Binte Aziz",
-      title: "CSE 031 08179",
-      dept: "Dept. of Computer Science and Engineering",
-      role: "Designer & Developer",
-      image: "/user.png",
+      image: "/tasmia.jpg",
     },
   ];
 
@@ -228,7 +214,7 @@ export default function AboutPage() {
       {/* Team */}
       <section>
         <h2 className="text-2xl font-bold text-center mb-8">Meet Our Team</h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 max-w-2xl mx-auto">
           {team.map((member, i) => (
             <Card key={i} className="overflow-hidden group hover:shadow-xl transition-all duration-300 border-none bg-muted/20">
               <CardContent className="pt-8 text-center space-y-4">
